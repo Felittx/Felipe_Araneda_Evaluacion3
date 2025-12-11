@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ubb</groupId>
-	<artifactId>IS</artifactId>
+	<artifactId>evaluacion3</artifactId>
 	<version>0.0.1</version>
 	<name>evaluacion3</name>
 	<description>Evaluación 3 del ramo Ingeniería de Software</description>
