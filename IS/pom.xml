@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.ubb</groupId>
 	<artifactId>IS</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Evaluacion2</name>
-	<description>Evaluación 2 del ramo Ingeniería de Software</description>
+	<version>0.0.1</version>
+	<name>evaluacion3_Felipe_Araneda</name>
+	<description>Evaluación 3 del ramo Ingeniería de Software</description>
 	<url/>
 	<licenses>
 		<license/>
