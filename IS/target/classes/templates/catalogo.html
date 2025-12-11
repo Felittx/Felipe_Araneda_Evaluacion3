@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Catálogo Mueblería</title>
+  <style>
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+    .card { border: 1px solid #ccc; padding: 15px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+<h1>Catálogo de Productos</h1>
+
+<div class="grid">
+  <div class="card" th:each="mueble : ${muebles}" th:if="${mueble.estado.name() == 'ACTIVO'}">
+    <h3 th:text="${mueble.nombre_mueble}">Nombre Mueble</h3>
+    <p>Precio Base: <b th:text="'$' + ${mueble.precio_base}">$0</b></p>
+    <p>Material: <span th:text="${mueble.material}">Madera</span></p>
+
+    <label>Variante:</label>
+    <select th:id="'var-' + ${mueble.id_mueble}">
+      <option th:each="v : ${variantes}"
+              th:value="${v.id_variante}"
+              th:text="${v.detalle} + ' (+$' + ${v.valor_adicional} + ')'">
+        Color Rojo (+$1000)
+      </option>
+    </select>
+
+    <br><br>
+    <label>Cantidad:</label>
+    <input type="number" th:id="'cant-' + ${mueble.id_mueble}" value="1" min="1" th:max="${mueble.stock}">
+
+    <br><br>
+    <button th:onclick="'cotizar(' + ${mueble.id_mueble} + ')'">Cotizar</button>
+  </div>
+</div>
+
+<script>
+
+  async function cotizar(idMueble) {
+      const idVariante = document.getElementById('var-' + idMueble).value;
+      const cantidad = document.getElementById('cant-' + idMueble).value;
+
+      const data = {
+          detalles: [{
+              mueble: { id_mueble: idMueble },
+              variante: { id_variante: idVariante },
+              cantidad: cantidad
+          }]
+      };
+
+      const response = await fetch('/cotizaciones', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+          const cotizacion = await response.json();
+          if(confirm("Cotización creada por $" + cotizacion.total + ". ¿Desea confirmar la compra?")) {
+              confirmarVenta(cotizacion.id_cotizacion);
+          }
+      } else {
+          alert("Error al cotizar");
+      }
+  }
+
+  async function confirmarVenta(idCotizacion) {
+      const res = await fetch('/cotizaciones/' + idCotizacion + '/confirmar-venta', { method: 'POST' });
+      if (res.ok) {
+          alert("¡Venta Exitosa!");
+          location.reload();
+      } else {
+          alert(await res.text());
+      }
+  }
+</script>
+</body>
+</html>
